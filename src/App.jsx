@@ -1,8 +1,12 @@
-import React from 'react'
-import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+gsap.registerPlugin(ScrollTrigger);
+import React from 'react';
+import { useGSAP } from '@gsap/react';
 import { useState, useEffect, useRef } from 'react';
-import 'remixicon/fonts/remixicon.css'
+import 'remixicon/fonts/remixicon.css';
+
+ 
 
 function App() {
   let [showContent, setShowContent] = useState(false);
@@ -38,7 +42,7 @@ function App() {
   };
 
   // Try to play audio when user interacts with the page
-  const handleUserInteraction = async () => {
+  const handleUserInteraction = React.useCallback(async () => {
     if (audioRef.current && !isAudioPlaying) {
       try {
         await audioRef.current.play();
@@ -46,7 +50,7 @@ function App() {
         console.log('Audio play failed:', error);
       }
     }
-  };
+  }, [isAudioPlaying]);
 
   // Add user interaction listeners
   useEffect(() => {
@@ -60,7 +64,7 @@ function App() {
       document.removeEventListener('click', handleClick);
       document.removeEventListener('keydown', handleKeyPress);
     };
-  }, [isAudioPlaying]);
+  }, [isAudioPlaying, handleUserInteraction]);
   useGSAP(() => {
     const tl = gsap.timeline();
 
@@ -161,11 +165,7 @@ function App() {
   return (
     <>
       {/* Audio element for background music */}
-      <audio 
-        ref={audioRef}
-        src="./sound/gtasound.mp3"
-        preload="auto"
-      />
+      
      <div className="svg flex items-center justify-center fixed top-0 left-0 z-[100] w-full h-screen overflow-hidden bg-[#000]">
         <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
           <defs>
@@ -208,18 +208,7 @@ function App() {
                   Rockstar
                 </h3>
               </div>
-              {/* Audio Control Button */}
-              <button 
-                onClick={toggleAudio}
-                className="absolute top-10 right-10 text-white text-2xl hover:text-gray-300 transition-colors"
-                title={isAudioPlaying ? "Pause Audio" : "Play Audio"}
-              >
-                {isAudioPlaying ? (
-                  <i className="ri-volume-mute-line"></i>
-                ) : (
-                  <i className="ri-volume-up-line"></i>
-                )}
-              </button>
+             
             </div>
           <div className='imagesdiv relative w-full h-screen overflow-hidden'>
           <img className='sky scale-[1.2] absolute top-0 left-0 w-full h-full object-cover' src="./sky.png" alt="" />
@@ -251,7 +240,7 @@ function App() {
               />
             </div>
         </div>
-        <div className="w-full h-screen flex items-center justify-center bg-black">
+        <div className="w-full h-[100vh] flex items-center justify-center bg-black">
             <div className="cntnr flex text-white w-full h-[80%] ">
               <div className="limg relative w-1/2 h-full">
                 <img
@@ -265,16 +254,72 @@ function App() {
                 <h1 className="text-6xl">Not Hunting</h1>
                
                 <p className="mt-3 text-lg font-[Helvetica_Now_Display]">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                  eius illum fugit eligendi nesciunt quia similique velit
-                  excepturi soluta tenetur illo repellat consectetur laborum
-                  eveniet eaque, dicta, hic quisquam? Ex cupiditate ipsa nostrum
-                  autem sapiente.
+                GTA 6 is the upcoming installment in Rockstar Games' legendary Grand Theft Auto series, set in the fictional state of Leonida, inspired by Florida. The game follows two main characters, Lucia and Jason, as they navigate a criminal underworld in a story reminiscent of Bonnie and Clyde. With a return to Vice City 
+
                 </p>
                
                 <button className="bg-yellow-500 px-8 py-8 text-black mt-10 text-2xl">
                   Download Now
                 </button>
+              </div>
+            </div>
+            
+          </div>
+          
+          {/* Replace the old video section with the scroll-synced video */}
+          <ScrollVideo />
+          <div id="form" className="w-full min-h-screen bg-black text-white flex items-center justify-center py-20 px-4">
+            <div className="w-full max-w-2xl bg-[linear-gradient(135deg,theme(colors.red.500),theme(colors.orange.400),theme(colors.yellow.300),theme(colors.blue.500))] p-[2px] rounded-2xl">
+              <div className="rounded-2xl bg-black p-8">
+                <h2 className="text-3xl font-bold tracking-tight mb-2">Contact</h2>
+                <p className="text-sm text-gray-400 mb-8">Got a question? Reach out and we’ll get back to you.</p>
+                <form onSubmit={(e) => { e.preventDefault(); }} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm mb-2">Name</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Your name"
+                        className="w-full rounded-lg bg-neutral-900/70 border border-neutral-800 px-4 py-3 outline-none placeholder-gray-500 focus:border-red-500 focus:ring-2 focus:ring-blue-400/40"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm mb-2">Player ID</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. LC-90210"
+                        className="w-full rounded-lg bg-neutral-900/70 border border-neutral-800 px-4 py-3 outline-none placeholder-gray-500 focus:border-red-500 focus:ring-2 focus:ring-blue-400/40"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm mb-2">Email</label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="you@example.com"
+                      className="w-full rounded-lg bg-neutral-900/70 border border-neutral-800 px-4 py-3 outline-none placeholder-gray-500 focus:border-red-500 focus:ring-2 focus:ring-blue-400/40"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm mb-2">Message</label>
+                    <textarea
+                      rows="5"
+                      placeholder="Tell us what’s up…"
+                      className="w-full rounded-lg bg-neutral-900/70 border border-neutral-800 px-4 py-3 outline-none placeholder-gray-500 focus:border-red-500 focus:ring-2 focus:ring-blue-400/40"
+                    />
+                  </div>
+                  <div className="pt-2">
+                    <button
+                      type="submit"
+                      className="w-full md:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-red-500 via-orange-400 to-blue-500 px-6 py-3 font-semibold text-black transition-transform hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                      Send Message
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
@@ -285,6 +330,82 @@ function App() {
       
     </>
   )
+}
+
+// Scroll-synced video component
+function ScrollVideo() {
+  const videoRef = useRef(null);
+  const containerRef = useRef(null);
+  const frameRef = useRef();
+  const targetTimeRef = useRef(0);
+
+  useEffect(() => {
+    const video = videoRef.current;
+
+    const handleLoadedMetadata = () => {};
+    const handleError = () => {
+      console.log('Video failed to load');
+    };
+    video.addEventListener('loadedmetadata', handleLoadedMetadata);
+    video.addEventListener('error', handleError);
+
+    let scrollTween;
+    setTimeout(() => {
+      scrollTween = gsap.to({}, {
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: true,
+          onUpdate: self => {
+            if (video.readyState >= 1 && video.duration) {
+              targetTimeRef.current = self.progress * video.duration;
+              if (!frameRef.current) {
+                frameRef.current = requestAnimationFrame(updateVideoTime);
+              }
+            }
+          },
+        },
+      });
+    }, 100);
+
+    function updateVideoTime() {
+      if (!video) return;
+      const current = video.currentTime;
+      const target = targetTimeRef.current;
+      const diff = target - current;
+      if (Math.abs(diff) > 0.01) {
+        video.currentTime += diff * 0.18; // Snappier response
+        frameRef.current = requestAnimationFrame(updateVideoTime);
+      } else {
+        video.currentTime = target;
+        frameRef.current = null;
+      }
+    }
+
+    return () => {
+      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      video.removeEventListener('error', handleError);
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      if (scrollTween) scrollTween.kill();
+      if (frameRef.current) cancelAnimationFrame(frameRef.current);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      style={{ height: '200vh', backgroundColor: '#000' }}
+    >
+      <video
+        ref={videoRef}
+        src="/jason.mp4"
+        style={{ width: '100vw', height: '100vh', objectFit: 'cover', position: 'sticky', top: 0, willChange: 'transform' }}
+        muted
+        playsInline
+      />
+    </div>
+  );
 }
 
 export default App
